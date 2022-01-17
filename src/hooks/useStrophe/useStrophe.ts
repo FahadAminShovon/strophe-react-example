@@ -1,6 +1,6 @@
 import { useReducer } from 'react';
 import { Strophe } from 'strophe.js';
-import { disconnectionReasonType, strophReducerState } from './stroph.types';
+import { strophReducerState } from './stroph.types';
 import { strophReducer } from './strophReducer';
 import { executeFunction } from './utils/helpers';
 import {
@@ -45,10 +45,8 @@ const useStrophe = ({
     dispatch,
   ] = useReducer(strophReducer, initialState);
 
-  const stropheConnect = () =>
+  const connect = () =>
     connection.connect(jabid, pass, (status, reason: string) => {
-      const realReason = reason as disconnectionReasonType;
-
       switch (status) {
         case Strophe.Status.CONNECTING:
           dispatch(setConnectingAction());
@@ -59,11 +57,11 @@ const useStrophe = ({
           executeFunction(onConnect);
           break;
         case Strophe.Status.DISCONNECTING:
-          dispatch(setDisconnectingAction(realReason));
+          dispatch(setDisconnectingAction(reason));
           executeFunction(onDisconnecting);
           break;
         case Strophe.Status.DISCONNECTED:
-          dispatch(setDisconnectedAction(realReason));
+          dispatch(setDisconnectedAction(reason));
           executeFunction(onDisconnect);
           break;
         default:
@@ -71,12 +69,12 @@ const useStrophe = ({
       }
     });
 
-  const disconnect = (reason: disconnectionReasonType) => {
+  const disconnect = (reason: string) => {
     connection.disconnect(reason);
   };
 
   return {
-    stropheConnect,
+    connect,
     disconnect,
     connected,
     connecting,

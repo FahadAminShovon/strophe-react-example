@@ -8,7 +8,7 @@ const connection = new Strophe.Connection(wssGenerator(variables.boshServer));
 
 function App() {
   const {
-    stropheConnect,
+    connect,
     connected,
     disconnect,
     connecting,
@@ -20,7 +20,7 @@ function App() {
   });
 
   useEffect(() => {
-    stropheConnect();
+    connect();
   }, []);
 
   return (
@@ -35,7 +35,7 @@ function App() {
         {connected && (
           <button onClick={() => disconnect('TESTING')}>Disconnect</button>
         )}
-        {disconnected && <button onClick={stropheConnect}>Connect</button>}
+        {disconnected && <button onClick={connect}>Connect</button>}
       </div>
     </div>
   );

@@ -5,18 +5,16 @@ import {
   DISCONNECTING,
 } from './strophActions';
 
-export type disconnectionReasonType = 'TESTING';
-
 export interface strophReducerState {
   connecting: boolean;
   connected: boolean;
   disconnecting: boolean;
   disconnected: boolean;
-  reason?: disconnectionReasonType | null;
+  reason?: string | null;
 }
 
 type reasonPayload = {
-  reason?: disconnectionReasonType | null;
+  reason?: string | null;
 };
 
 export interface StrophConnectingAction {

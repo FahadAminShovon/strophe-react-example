@@ -1,5 +1,4 @@
 import {
-  disconnectionReasonType,
   StrophConnectedAction,
   StrophConnectingAction,
   StrophDisconnectedAction,
@@ -23,14 +22,14 @@ export const setConnectedAction = (): StrophConnectedAction => ({
 });
 
 export const setDisconnectingAction = (
-  reason: disconnectionReasonType
+  reason: string
 ): StrophDisconnectingAction => ({
   type: DISCONNECTING,
   payload: { reason },
 });
 
 export const setDisconnectedAction = (
-  reason: disconnectionReasonType
+  reason: string
 ): StrophDisconnectedAction => ({
   type: DISCONNECTED,
   payload: { reason },
