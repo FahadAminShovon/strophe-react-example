@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
 import { user1 } from './data/users';
-import { getJabberUserId } from './utils/helpers';
+import { getJabberUserId, wssGenerator } from './utils/helpers';
 import { useStrophe } from './hooks/useStrophe';
+import { variables } from './constants/Variables';
+
+const connection = new Strophe.Connection(wssGenerator(variables.boshServer));
 
 function App() {
   const {
@@ -13,6 +16,7 @@ function App() {
     disconnected,
   } = useStrophe({
     credentials: { jabid: getJabberUserId(user1.id), pass: user1.password },
+    connection,
   });
 
   useEffect(() => {
