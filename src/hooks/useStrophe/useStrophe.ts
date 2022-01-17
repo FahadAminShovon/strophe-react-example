@@ -47,6 +47,13 @@ const useStrophe = ({
 
   const connect = () =>
     connection.connect(jabid, pass, (status, reason: string) => {
+      if (showLogs) {
+        for (let stropheStatus in Strophe.Status) {
+          if (Number(Strophe.Status[stropheStatus]) === status) {
+            console.info(`Strophe status: ${stropheStatus}`);
+          }
+        }
+      }
       switch (status) {
         case Strophe.Status.CONNECTING:
           dispatch(setConnectingAction());

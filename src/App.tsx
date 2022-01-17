@@ -5,6 +5,10 @@ import { useStrophe } from './hooks/useStrophe';
 import { variables } from './constants/Variables';
 
 const connection = new Strophe.Connection(wssGenerator(variables.boshServer));
+const credentials = {
+  jabid: getJabberUserId(user1.id),
+  pass: user1.password,
+};
 
 function App() {
   const {
@@ -15,8 +19,9 @@ function App() {
     disconnecting,
     disconnected,
   } = useStrophe({
-    credentials: { jabid: getJabberUserId(user1.id), pass: user1.password },
+    credentials,
     connection,
+    showLogs: true,
   });
 
   useEffect(() => {
