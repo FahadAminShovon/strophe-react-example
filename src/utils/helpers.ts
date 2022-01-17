@@ -14,3 +14,9 @@ export const wssGenerator = (url: string) => {
   }
   return `wss://${url}`;
 };
+
+export const executeFunction = (func: Function | undefined | null) => {
+  if (typeof func === 'function') {
+    func();
+  }
+};
