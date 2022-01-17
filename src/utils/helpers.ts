@@ -4,4 +4,13 @@ export const getJabberUserId = (bearer: string): string => {
   return `${bearer}@${variables.jabberDomain}`;
 };
 
-export const wssGenerator = (url: string) => `wss://${url}`;
+export const wssGenerator = (url: string) => {
+  if (
+    ['wss://', 'ws://', 'http://', 'https://'].some((protocol) =>
+      url.includes(protocol)
+    )
+  ) {
+    return url;
+  }
+  return `wss://${url}`;
+};

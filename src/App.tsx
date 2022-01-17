@@ -1,25 +1,56 @@
-import { Strophe } from 'strophe.js';
-import { variables } from './constants/Variables';
+import { useEffect, useState } from 'react';
 import { user1 } from './data/users';
-import { getJabberUserId, wssGenerator } from './utils/helpers';
+import { getJabberUserId } from './utils/helpers';
+import useStrophe from './hooks/useStrophe';
 
 function App() {
-  const connection = new Strophe.Connection(
-    wssGenerator(variables.boshServer),
-    {
-      protocol: 'wss',
-    }
-  );
-  console.log(
-    'I am here',
-    wssGenerator(variables.boshServer),
-    getJabberUserId(user1.id),
-    user1.password
-  );
+  const [connected, setConnected] = useState(false);
+  const onConnect = () => setConnected(true);
+  const onDisconnect = (reason: string) => {
+    console.log('This is the reason', reason);
+    setConnected(false);
+  };
 
-  connection.connect(getJabberUserId(user1.id), user1.password);
+  const { stropheDisconnect, stropheConnect, connection } = useStrophe({
+    credentials: {
+      jabid: getJabberUserId(user1.id),
+      pass: user1.password,
+    },
+    onConnect,
+    onDisconnect,
+  });
 
-  return <div>Strophe</div>;
+  useEffect(() => {
+    stropheConnect();
+  }, []);
+
+  return (
+    <div>
+      {connected ? (
+        <div>
+          <p>The server is connected</p>
+          <button
+            onClick={() => {
+              connection.disconnect('TESTING');
+            }}
+          >
+            Disconnect
+          </button>
+        </div>
+      ) : (
+        <div>
+          <p>The server got disconnected</p>
+          <button
+            onClick={() => {
+              stropheDisconnect('TESTING');
+            }}
+          >
+            Connect
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default App;
