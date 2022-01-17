@@ -5,11 +5,12 @@ import { useStrophe } from './hooks/useStrophe';
 
 function App() {
   const {
+    stropheConnect,
     connected,
+    disconnect,
     connecting,
     disconnecting,
-    stropheConnect,
-    stropheDisconnect,
+    disconnected,
   } = useStrophe({
     credentials: { jabid: getJabberUserId(user1.id), pass: user1.password },
   });
@@ -22,23 +23,16 @@ function App() {
     <div>
       {connecting && <p>Connecting...</p>}
       {disconnecting && <p>Disconnecting...</p>}
-      {connected ? (
-        <div>
-          <p>The server is connected</p>
-          <button
-            onClick={() => {
-              stropheDisconnect('TESTING');
-            }}
-          >
-            Disconnect
-          </button>
-        </div>
-      ) : (
-        <div>
-          <p>The server got disconnected</p>
-          <button onClick={stropheConnect}>Connect</button>
-        </div>
-      )}
+      <div>
+        <p>The server is {connected ? 'connected' : 'disconnected'}</p>
+      </div>
+
+      <div>
+        {connected && (
+          <button onClick={() => disconnect('TESTING')}>Disconnect</button>
+        )}
+        {disconnected && <button onClick={stropheConnect}>Connect</button>}
+      </div>
     </div>
   );
 }

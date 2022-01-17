@@ -29,11 +29,16 @@ export const strophReducer = (
 ): strophReducerState => {
   switch (action.type) {
     case CONNECTING:
-      return { ...singleStateGenerator('connecting') };
+      return {
+        ...singleStateGenerator('connecting'),
+      };
     case CONNECTED:
       return { ...singleStateGenerator('connected') };
     case DISCONNECTING:
-      return { ...singleStateGenerator('disconnecting'), ...action.payload };
+      return {
+        ...singleStateGenerator('disconnecting'),
+        ...action.payload,
+      };
     case DISCONNECTED:
       return { ...singleStateGenerator('disconnected'), ...action.payload };
     default:

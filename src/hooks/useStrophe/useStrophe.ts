@@ -1,7 +1,7 @@
 import { Strophe } from 'strophe.js';
 import { variables } from '../../constants/Variables';
 import { wssGenerator, executeFunction } from '../../utils/helpers';
-import { useCallback, useReducer } from 'react';
+import { useReducer } from 'react';
 import { disconnectionReasonType, strophReducerState } from './stroph.types';
 import { strophReducer } from './strophReducer';
 import {
@@ -31,6 +31,7 @@ const initialState: strophReducerState = {
   reason: null,
 };
 
+const connection = new Strophe.Connection(wssGenerator(variables.boshServer));
 const useStrophe = ({
   credentials: { jabid, pass },
   showLogs = false,
@@ -44,9 +45,8 @@ const useStrophe = ({
     dispatch,
   ] = useReducer(strophReducer, initialState);
 
-  const connection = new Strophe.Connection(wssGenerator(variables.boshServer));
-  const stropheConnect = useCallback(() => {
-    connection.connect(jabid, pass, (status: number, reason: string) => {
+  const stropheConnect = () =>
+    connection.connect(jabid, pass, (status, reason: string) => {
       const realReason = reason as disconnectionReasonType;
 
       switch (status) {
@@ -70,15 +70,14 @@ const useStrophe = ({
           console.log('Default');
       }
     });
-  }, []);
 
-  const stropheDisconnect = (reason: disconnectionReasonType) => {
+  const disconnect = (reason: disconnectionReasonType) => {
     connection.disconnect(reason);
   };
 
   return {
     stropheConnect,
-    stropheDisconnect,
+    disconnect,
     connected,
     connecting,
     disconnected,
