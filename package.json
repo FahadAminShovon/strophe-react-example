@@ -24,7 +24,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "setupEnv": "cp .env-sample .env ; cp src/data/userSample.ts src/data/users.ts"
+    "setupEnv": "cp .env.sample .env ; cp src/data/userSample.ts src/data/users.ts"
   },
   "eslintConfig": {
     "extends": [
