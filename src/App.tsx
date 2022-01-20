@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { Strophe } from 'strophe.js';
 import { user1 } from './data/users';
 import { getJabberUserId, wssGenerator } from './utils/helpers';
 import { useStrophe } from './hooks/useStrophe';
@@ -38,9 +39,15 @@ function App() {
 
       <div>
         {connected && (
-          <button onClick={() => disconnect('TESTING')}>Disconnect</button>
+          <button type="button" onClick={() => disconnect('TESTING')}>
+            Disconnect
+          </button>
         )}
-        {disconnected && <button onClick={connect}>Connect</button>}
+        {disconnected && (
+          <button type="button" onClick={connect}>
+            Connect
+          </button>
+        )}
       </div>
     </div>
   );

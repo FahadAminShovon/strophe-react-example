@@ -17,6 +17,7 @@ const singleStateGenerator = (
   [stateKey]: true,
 });
 
+/* eslint-disable default-param-last */
 export const strophReducer = (
   state: strophReducerState = {
     connecting: false,
@@ -27,6 +28,7 @@ export const strophReducer = (
   },
   action: StrophAllActions
 ): strophReducerState => {
+  /* eslint-enable default-param-last */
   switch (action.type) {
     case CONNECTING:
       return {

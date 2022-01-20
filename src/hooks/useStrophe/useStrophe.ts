@@ -46,13 +46,15 @@ const useStrophe = ({
   ] = useReducer(strophReducer, initialState);
 
   const connect = () =>
-    connection.connect(jabid, pass, (status, reason: string) => {
+    connection.connect(jabid, pass, (status, stropheReason: string) => {
       if (showLogs) {
-        for (let stropheStatus in Strophe.Status) {
+        /* eslint-disable */
+        for (const stropheStatus in Strophe.Status) {
           if (Number(Strophe.Status[stropheStatus]) === status) {
             console.info(`Strophe status: ${stropheStatus}`);
           }
         }
+        /* eslint-enable */
       }
       switch (status) {
         case Strophe.Status.CONNECTING:
@@ -64,20 +66,21 @@ const useStrophe = ({
           executeFunction(onConnect);
           break;
         case Strophe.Status.DISCONNECTING:
-          dispatch(setDisconnectingAction(reason));
+          dispatch(setDisconnectingAction(stropheReason));
           executeFunction(onDisconnecting);
           break;
         case Strophe.Status.DISCONNECTED:
-          dispatch(setDisconnectedAction(reason));
+          dispatch(setDisconnectedAction(stropheReason));
           executeFunction(onDisconnect);
           break;
         default:
+          // eslint-disable-next-line
           console.log('Default');
       }
     });
 
-  const disconnect = (reason: string) => {
-    connection.disconnect(reason);
+  const disconnect = (disconnectingReason: string) => {
+    connection.disconnect(disconnectingReason);
   };
 
   return {
