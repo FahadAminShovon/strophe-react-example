@@ -48,13 +48,13 @@ const useStrophe = ({
   const connect = () =>
     connection.connect(jabid, pass, (status, stropheReason: string) => {
       if (showLogs) {
-        /* eslint-disable */
+        // eslint-disable-next-line
         for (const stropheStatus in Strophe.Status) {
           if (Number(Strophe.Status[stropheStatus]) === status) {
+            // eslint-disable-next-line
             console.info(`Strophe status: ${stropheStatus}`);
           }
         }
-        /* eslint-enable */
       }
       switch (status) {
         case Strophe.Status.CONNECTING:
