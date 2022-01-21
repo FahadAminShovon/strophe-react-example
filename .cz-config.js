@@ -2,7 +2,7 @@ module.exports = {
   types: [
     { value: ':sparkles: feat', name: '✨ feat:\tAdding a new feature' },
     { value: ':bug: fix', name: '🐛 fix:\tFixing a bug' },
-    // { value: ':memo: docs', name: '📝 docs:\tAdd or update documentation' },
+    { value: ':memo: docs', name: '📝 docs:\tAdd or update documentation' },
     {
       value: ':lipstick: style',
       name: '💄 style:\tAdd or update styles, ui or ux',
@@ -40,6 +40,7 @@ module.exports = {
     { name: 'ui' },
     { name: 'settings' },
     { name: 'overall' },
+    { name: 'docs' },
   ],
 
   scopeOverrides: {
