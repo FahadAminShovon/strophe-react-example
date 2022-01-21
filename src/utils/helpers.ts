@@ -5,7 +5,7 @@ export const getJabberUserId = (bearer: string): string =>
 
 export const wssGenerator = (url: string) => {
   if (
-    ['wss://', 'ws://', 'http://', 'https://'].some((protocol) =>
+    ['wss://', 'ws://', 'http://', 'https://'].some(protocol =>
       url.includes(protocol)
     )
   ) {

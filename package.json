@@ -24,7 +24,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "setupEnv": "cp .env.sample .env ; cp src/data/userSample.ts src/data/users.ts"
+    "setupEnv": "cp .env.sample .env ; cp src/data/userSample.ts src/data/users.ts",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": [
@@ -56,6 +57,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
-    "prettier": "2.5.1"
+    "prettier": "2.5.1",
+    "husky": "^7.0.0"
   }
 }
