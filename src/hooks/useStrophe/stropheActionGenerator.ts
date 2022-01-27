@@ -2,12 +2,14 @@ import {
   ReasonType,
   StropheConnectedAction,
   StropheConnectingAction,
+  StropheConnFailAction,
   StropheDisconnectedAction,
   StropheDisconnectingAction,
 } from './strophe.types';
 import {
   CONNECTED,
   CONNECTING,
+  CONNFAIL,
   DISCONNECTED,
   DISCONNECTING,
 } from './stropheActions';
@@ -23,6 +25,13 @@ export const setConnectedAction = (
   reason: ReasonType
 ): StropheConnectedAction => ({
   type: CONNECTED,
+  payload: { reason },
+});
+
+export const setConnFailAction = (
+  reason: ReasonType
+): StropheConnFailAction => ({
+  type: CONNFAIL,
   payload: { reason },
 });
 

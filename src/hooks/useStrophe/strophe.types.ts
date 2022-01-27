@@ -1,4 +1,5 @@
 import {
+  CONNFAIL,
   CONNECTED,
   CONNECTING,
   DISCONNECTED,
@@ -18,6 +19,7 @@ export interface StropheReducerState extends ReasonPayload {
   connected: boolean;
   disconnecting: boolean;
   disconnected: boolean;
+  connFail: boolean;
 }
 
 export interface StropheConnectingAction extends ConnectionPayload {
@@ -26,6 +28,10 @@ export interface StropheConnectingAction extends ConnectionPayload {
 
 export interface StropheConnectedAction extends ConnectionPayload {
   type: typeof CONNECTED;
+}
+
+export interface StropheConnFailAction extends ConnectionPayload {
+  type: typeof CONNFAIL;
 }
 
 export interface StropheDisconnectingAction extends ConnectionPayload {
@@ -40,4 +46,5 @@ export type StropheAllActions =
   | StropheConnectingAction
   | StropheConnectedAction
   | StropheDisconnectingAction
-  | StropheDisconnectedAction;
+  | StropheDisconnectedAction
+  | StropheConnFailAction;

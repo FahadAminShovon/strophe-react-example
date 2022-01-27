@@ -1,10 +1,11 @@
 import { useReducer } from 'react';
 import { Strophe } from 'strophe.js';
 import { strophReducer } from './stropheReducer';
-import { executeFunction } from './utils/helpers';
+import { ConnectionFunctionType, executeFunction } from './utils/helpers';
 import {
   setConnectedAction,
   setConnectingAction,
+  setConnFailAction,
   setDisconnectedAction,
   setDisconnectingAction,
 } from './stropheActionGenerator';
@@ -16,10 +17,11 @@ type PropType = {
     pass: string;
   };
   showLogs?: boolean;
-  onConnect?: () => void;
-  onConnecting?: () => void;
-  onDisconnect?: () => void;
-  onDisconnecting?: () => void;
+  onConnect?: ConnectionFunctionType;
+  onConnecting?: ConnectionFunctionType;
+  onDisconnect?: ConnectionFunctionType;
+  onDisconnecting?: ConnectionFunctionType;
+  onConnFail?: ConnectionFunctionType;
   connection: Strophe.Connection;
 };
 
@@ -28,6 +30,7 @@ const initialState: StropheReducerState = {
   connected: false,
   disconnecting: false,
   disconnected: false,
+  connFail: false,
   reason: null,
 };
 
@@ -38,10 +41,11 @@ const useStrophe = ({
   onConnect,
   onDisconnecting,
   onDisconnect,
+  onConnFail,
   connection,
 }: PropType) => {
   const [
-    { connected, connecting, disconnected, disconnecting, reason },
+    { connected, connecting, disconnected, disconnecting, reason, connFail },
     dispatch,
   ] = useReducer(strophReducer, initialState);
 
@@ -61,19 +65,23 @@ const useStrophe = ({
       switch (status) {
         case Strophe.Status.CONNECTING:
           dispatch(setConnectingAction(stropheReason));
-          executeFunction(onConnecting);
+          executeFunction({ func: onConnecting, reason: stropheReason });
           break;
         case Strophe.Status.CONNECTED:
           dispatch(setConnectedAction(stropheReason));
-          executeFunction(onConnect);
+          executeFunction({ func: onConnect, reason: stropheReason });
+          break;
+        case Strophe.Status.CONNFAIL:
+          dispatch(setConnFailAction(stropheReason));
+          executeFunction({ func: onConnFail, reason: stropheReason });
           break;
         case Strophe.Status.DISCONNECTING:
           dispatch(setDisconnectingAction(stropheReason));
-          executeFunction(onDisconnecting);
+          executeFunction({ func: onDisconnecting, reason: stropheReason });
           break;
         case Strophe.Status.DISCONNECTED:
           dispatch(setDisconnectedAction(stropheReason));
-          executeFunction(onDisconnect);
+          executeFunction({ func: onDisconnect, reason: stropheReason });
           break;
         default:
           // eslint-disable-next-line
@@ -94,6 +102,7 @@ const useStrophe = ({
     disconnecting,
     reason,
     connection,
+    connFail,
   };
 };
 

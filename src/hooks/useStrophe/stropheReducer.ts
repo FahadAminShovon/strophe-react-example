@@ -2,6 +2,7 @@ import { StropheReducerState, StropheAllActions } from './strophe.types';
 import {
   CONNECTED,
   CONNECTING,
+  CONNFAIL,
   DISCONNECTED,
   DISCONNECTING,
 } from './stropheActions';
@@ -13,6 +14,7 @@ const singleStateGenerator = (
   connected: false,
   disconnecting: false,
   disconnected: false,
+  connFail: false,
   reason: null,
   [stateKey]: true,
 });
@@ -24,6 +26,7 @@ export const strophReducer = (
     connected: false,
     disconnecting: false,
     disconnected: false,
+    connFail: false,
     reason: null,
   },
   action: StropheAllActions
@@ -33,9 +36,13 @@ export const strophReducer = (
     case CONNECTING:
       return {
         ...singleStateGenerator('connecting'),
+        ...action.payload,
       };
     case CONNECTED:
-      return { ...singleStateGenerator('connected') };
+      return { ...singleStateGenerator('connected'), ...action.payload };
+    case CONNFAIL:
+      return { ...singleStateGenerator('connFail'), ...action.payload };
+
     case DISCONNECTING:
       return {
         ...singleStateGenerator('disconnecting'),
