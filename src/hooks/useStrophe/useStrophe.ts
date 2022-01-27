@@ -73,16 +73,19 @@ const useStrophe = ({
       typeof onMessage === 'function'
         ? onMessage
         : message => {
+            // eslint-disable-next-line
             if (showLogs) console.log('onMessage', message);
             return true;
           },
       undefined,
       'message'
     );
+
     onPresenceHandler.current = connection.addHandler(
       typeof onPresence === 'function'
         ? onPresence
         : presence => {
+            // eslint-disable-next-line
             if (showLogs) console.log('onPresence', presence);
             return true;
           },
@@ -94,7 +97,8 @@ const useStrophe = ({
       typeof onIq === 'function'
         ? onIq
         : iq => {
-            if (iq) console.log('onIq', iq);
+            // eslint-disable-next-line
+            if (showLogs) console.log('onIq', iq);
             return true;
           },
       undefined,

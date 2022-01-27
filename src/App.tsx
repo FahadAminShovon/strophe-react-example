@@ -47,13 +47,11 @@ function App() {
   };
 
   useEffect(() => {
-    console.log('doaminName', domainName);
-    if (domainName) {
-      // console.log({ domainName, bareJid, resource });
+    if (domainName && connected) {
       const ping = createPing(domainName);
       connection.send(ping);
     }
-  }, [domainName]);
+  }, [domainName, connected]);
 
   return (
     <div>
