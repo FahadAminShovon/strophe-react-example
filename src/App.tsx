@@ -26,10 +26,6 @@ function App() {
     credentials,
     connection,
     // showLogs: true,
-    onIq: (iq: Element) => {
-      console.log('iq', iq);
-      return true;
-    },
   });
 
   useEffect(() => {
@@ -51,6 +47,7 @@ function App() {
   };
 
   useEffect(() => {
+    console.log('doaminName', domainName);
     if (domainName) {
       // console.log({ domainName, bareJid, resource });
       const ping = createPing(domainName);

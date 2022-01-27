@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 import { Strophe } from 'strophe.js';
 import { strophReducer } from './stropheReducer';
 import { ConnectionFunctionType, executeFunction } from './utils/helpers';
@@ -64,8 +64,12 @@ const useStrophe = ({
     dispatch,
   ] = useReducer(strophReducer, initialState);
 
-  useEffect(() => {
-    const onMessageHandler = connection.addHandler(
+  const onMessageHandler = useRef(null);
+  const onPresenceHandler = useRef(null);
+  const onIqHandler = useRef(null);
+
+  const connectHandlers = () => {
+    onMessageHandler.current = connection.addHandler(
       typeof onMessage === 'function'
         ? onMessage
         : message => {
@@ -75,7 +79,7 @@ const useStrophe = ({
       undefined,
       'message'
     );
-    const onPresenceHandler = connection.addHandler(
+    onPresenceHandler.current = connection.addHandler(
       typeof onPresence === 'function'
         ? onPresence
         : presence => {
@@ -86,7 +90,7 @@ const useStrophe = ({
       'presence'
     );
 
-    const onIqHandler = connection.addHandler(
+    onIqHandler.current = connection.addHandler(
       typeof onIq === 'function'
         ? onIq
         : iq => {
@@ -96,12 +100,16 @@ const useStrophe = ({
       undefined,
       'iq'
     );
+  };
 
-    return () => {
-      connection.deleteHandler(onMessageHandler);
-      connection.deleteHandler(onPresenceHandler);
-      connection.deleteHandler(onIqHandler);
-    };
+  const disconnectHandlers = () => {
+    connection.deleteHandler(onMessageHandler);
+    connection.deleteHandler(onPresenceHandler);
+    connection.deleteHandler(onIqHandler);
+  };
+
+  useEffect(() => {
+    return disconnectHandlers;
   }, []);
   const connect = () =>
     connection.connect(jabid, pass, (status, stropheReason: string) => {
@@ -126,6 +134,7 @@ const useStrophe = ({
           const connectedDomainName = Strophe.getDomainFromJid(connection.jid);
           dispatch(setDomainNameAction({ domainName: connectedDomainName }));
           executeFunction({ func: onConnect, reason: stropheReason });
+          connectHandlers();
           break;
         }
         case Strophe.Status.CONNFAIL:
@@ -139,6 +148,7 @@ const useStrophe = ({
         case Strophe.Status.DISCONNECTED:
           dispatch(setDisconnectedAction(stropheReason));
           executeFunction({ func: onDisconnect, reason: stropheReason });
+          disconnectHandlers();
           break;
         default:
           // eslint-disable-next-line
