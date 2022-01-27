@@ -20,12 +20,16 @@ function App() {
     disconnecting,
     disconnected,
     domainName,
-    resource,
-    bareJid,
+    // resource,
+    // bareJid,
   } = useStrophe({
     credentials,
     connection,
-    showLogs: true,
+    // showLogs: true,
+    onIq: (iq: Element) => {
+      console.log('iq', iq);
+      return true;
+    },
   });
 
   useEffect(() => {
@@ -48,7 +52,7 @@ function App() {
 
   useEffect(() => {
     if (domainName) {
-      console.log({ domainName, bareJid, resource });
+      // console.log({ domainName, bareJid, resource });
       const ping = createPing(domainName);
       connection.send(ping);
     }

@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import { Strophe } from 'strophe.js';
 import { strophReducer } from './stropheReducer';
 import { ConnectionFunctionType, executeFunction } from './utils/helpers';
@@ -23,6 +23,9 @@ type PropType = {
   onDisconnect?: ConnectionFunctionType;
   onDisconnecting?: ConnectionFunctionType;
   onConnFail?: ConnectionFunctionType;
+  onMessage?: (_msg: Element) => boolean;
+  onPresence?: (_presence: Element) => boolean;
+  onIq?: (_id: Element) => boolean;
   connection: Strophe.Connection;
 };
 
@@ -44,6 +47,9 @@ const useStrophe = ({
   onDisconnect,
   onConnFail,
   connection,
+  onMessage,
+  onPresence,
+  onIq,
 }: PropType) => {
   const [
     {
@@ -57,6 +63,46 @@ const useStrophe = ({
     },
     dispatch,
   ] = useReducer(strophReducer, initialState);
+
+  useEffect(() => {
+    const onMessageHandler = connection.addHandler(
+      typeof onMessage === 'function'
+        ? onMessage
+        : message => {
+            if (showLogs) console.log('onMessage', message);
+            return true;
+          },
+      undefined,
+      'message'
+    );
+    const onPresenceHandler = connection.addHandler(
+      typeof onPresence === 'function'
+        ? onPresence
+        : presence => {
+            if (showLogs) console.log('onPresence', presence);
+            return true;
+          },
+      undefined,
+      'presence'
+    );
+
+    const onIqHandler = connection.addHandler(
+      typeof onIq === 'function'
+        ? onIq
+        : iq => {
+            if (iq) console.log('onIq', iq);
+            return true;
+          },
+      undefined,
+      'iq'
+    );
+
+    return () => {
+      connection.deleteHandler(onMessageHandler);
+      connection.deleteHandler(onPresenceHandler);
+      connection.deleteHandler(onIqHandler);
+    };
+  }, []);
   const connect = () =>
     connection.connect(jabid, pass, (status, stropheReason: string) => {
       if (showLogs) {
