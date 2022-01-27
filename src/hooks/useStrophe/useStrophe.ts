@@ -54,8 +54,6 @@ const useStrophe = ({
       reason,
       connFail,
       domainName,
-      bareJid,
-      resource,
     },
     dispatch,
   ] = useReducer(strophReducer, initialState);
@@ -80,15 +78,7 @@ const useStrophe = ({
         case Strophe.Status.CONNECTED: {
           dispatch(setConnectedAction(stropheReason));
           const connectedDomainName = Strophe.getDomainFromJid(connection.jid);
-          const connectedBareJid = Strophe.getBareJidFromJid(connection.jid);
-          const connectedResource = Strophe.getResourceFromJid(connection.jid);
-          dispatch(
-            setDomainNameAction({
-              domainName: connectedDomainName,
-              bareJid: connectedBareJid,
-              resource: connectedResource,
-            })
-          );
+          dispatch(setDomainNameAction({ domainName: connectedDomainName }));
           executeFunction({ func: onConnect, reason: stropheReason });
           break;
         }
@@ -124,8 +114,8 @@ const useStrophe = ({
     reason,
     connFail,
     domainName,
-    bareJid,
-    resource,
+    bareJid: Strophe.getBareJidFromJid(connection.jid),
+    resource: Strophe.getResourceFromJid(connection.jid),
   };
 };
 

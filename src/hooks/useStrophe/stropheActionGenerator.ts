@@ -1,5 +1,5 @@
 import {
-  domainNameResourceBareJidType,
+  domainNameType,
   SetDomainNameAction,
   ReasonType,
   StropheConnectedAction,
@@ -53,7 +53,7 @@ export const setDisconnectedAction = (
 });
 
 export const setDomainNameAction = (
-  payload: domainNameResourceBareJidType
+  payload: domainNameType
 ): SetDomainNameAction => ({
   type: SET_DOMAIN_NAME,
   payload,

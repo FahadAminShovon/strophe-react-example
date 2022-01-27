@@ -54,10 +54,6 @@ function App() {
     }
   }, [domainName]);
 
-  //   .t('How do you do');
-
-  // const domain = Strophe.getDomainFromJid(connection.jid);
-  // console.log('domain', domain);
   return (
     <div>
       {connecting && <p>Connecting...</p>}

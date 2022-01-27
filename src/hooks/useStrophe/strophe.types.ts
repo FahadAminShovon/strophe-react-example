@@ -12,21 +12,17 @@ export interface ReasonPayload {
   reason: ReasonType;
 }
 
-export interface domainNameResourceBareJidType {
+export interface domainNameType {
   domainName?: string;
-  bareJid?: string;
-  resource?: string;
 }
 export interface domainNamePayload {
-  payload: domainNameResourceBareJidType;
+  payload: domainNameType;
 }
 
 type ConnectionPayload = {
   payload: ReasonPayload;
 };
-export interface StropheReducerState
-  extends ReasonPayload,
-    domainNameResourceBareJidType {
+export interface StropheReducerState extends ReasonPayload, domainNameType {
   connecting: boolean;
   connected: boolean;
   disconnecting: boolean;
