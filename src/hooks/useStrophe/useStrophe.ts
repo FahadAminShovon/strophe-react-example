@@ -8,6 +8,7 @@ import {
   setConnFailAction,
   setDisconnectedAction,
   setDisconnectingAction,
+  setDomainNameAction,
 } from './stropheActionGenerator';
 import { StropheReducerState } from './strophe.types';
 
@@ -45,10 +46,19 @@ const useStrophe = ({
   connection,
 }: PropType) => {
   const [
-    { connected, connecting, disconnected, disconnecting, reason, connFail },
+    {
+      connected,
+      connecting,
+      disconnected,
+      disconnecting,
+      reason,
+      connFail,
+      domainName,
+      bareJid,
+      resource,
+    },
     dispatch,
   ] = useReducer(strophReducer, initialState);
-
   const connect = () =>
     connection.connect(jabid, pass, (status, stropheReason: string) => {
       if (showLogs) {
@@ -67,10 +77,21 @@ const useStrophe = ({
           dispatch(setConnectingAction(stropheReason));
           executeFunction({ func: onConnecting, reason: stropheReason });
           break;
-        case Strophe.Status.CONNECTED:
+        case Strophe.Status.CONNECTED: {
           dispatch(setConnectedAction(stropheReason));
+          const connectedDomainName = Strophe.getDomainFromJid(connection.jid);
+          const connectedBareJid = Strophe.getBareJidFromJid(connection.jid);
+          const connectedResource = Strophe.getResourceFromJid(connection.jid);
+          dispatch(
+            setDomainNameAction({
+              domainName: connectedDomainName,
+              bareJid: connectedBareJid,
+              resource: connectedResource,
+            })
+          );
           executeFunction({ func: onConnect, reason: stropheReason });
           break;
+        }
         case Strophe.Status.CONNFAIL:
           dispatch(setConnFailAction(stropheReason));
           executeFunction({ func: onConnFail, reason: stropheReason });
@@ -101,8 +122,10 @@ const useStrophe = ({
     disconnected,
     disconnecting,
     reason,
-    connection,
     connFail,
+    domainName,
+    bareJid,
+    resource,
   };
 };
 

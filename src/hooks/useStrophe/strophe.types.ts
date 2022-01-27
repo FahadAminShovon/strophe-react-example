@@ -4,6 +4,7 @@ import {
   CONNECTING,
   DISCONNECTED,
   DISCONNECTING,
+  SET_DOMAIN_NAME,
 } from './stropheActions';
 
 export type ReasonType = string | null | undefined;
@@ -11,15 +12,27 @@ export interface ReasonPayload {
   reason: ReasonType;
 }
 
+export interface domainNameResourceBareJidType {
+  domainName?: string;
+  bareJid?: string;
+  resource?: string;
+}
+export interface domainNamePayload {
+  payload: domainNameResourceBareJidType;
+}
+
 type ConnectionPayload = {
   payload: ReasonPayload;
 };
-export interface StropheReducerState extends ReasonPayload {
+export interface StropheReducerState
+  extends ReasonPayload,
+    domainNameResourceBareJidType {
   connecting: boolean;
   connected: boolean;
   disconnecting: boolean;
   disconnected: boolean;
   connFail: boolean;
+  domainName?: string;
 }
 
 export interface StropheConnectingAction extends ConnectionPayload {
@@ -42,9 +55,14 @@ export interface StropheDisconnectedAction extends ConnectionPayload {
   type: typeof DISCONNECTED;
 }
 
+export interface SetDomainNameAction extends domainNamePayload {
+  type: typeof SET_DOMAIN_NAME;
+}
+
 export type StropheAllActions =
   | StropheConnectingAction
   | StropheConnectedAction
   | StropheDisconnectingAction
   | StropheDisconnectedAction
-  | StropheConnFailAction;
+  | StropheConnFailAction
+  | SetDomainNameAction;

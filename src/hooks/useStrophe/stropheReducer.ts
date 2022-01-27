@@ -5,6 +5,7 @@ import {
   CONNFAIL,
   DISCONNECTED,
   DISCONNECTING,
+  SET_DOMAIN_NAME,
 } from './stropheActions';
 
 const singleStateGenerator = (
@@ -40,6 +41,11 @@ export const strophReducer = (
       };
     case CONNECTED:
       return { ...singleStateGenerator('connected'), ...action.payload };
+    case SET_DOMAIN_NAME:
+      return {
+        ...state,
+        ...action.payload,
+      };
     case CONNFAIL:
       return { ...singleStateGenerator('connFail'), ...action.payload };
 

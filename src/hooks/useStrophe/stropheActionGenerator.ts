@@ -1,4 +1,6 @@
 import {
+  domainNameResourceBareJidType,
+  SetDomainNameAction,
   ReasonType,
   StropheConnectedAction,
   StropheConnectingAction,
@@ -12,6 +14,7 @@ import {
   CONNFAIL,
   DISCONNECTED,
   DISCONNECTING,
+  SET_DOMAIN_NAME,
 } from './stropheActions';
 
 export const setConnectingAction = (
@@ -47,4 +50,11 @@ export const setDisconnectedAction = (
 ): StropheDisconnectedAction => ({
   type: DISCONNECTED,
   payload: { reason },
+});
+
+export const setDomainNameAction = (
+  payload: domainNameResourceBareJidType
+): SetDomainNameAction => ({
+  type: SET_DOMAIN_NAME,
+  payload,
 });

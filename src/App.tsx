@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Strophe } from 'strophe.js';
 import { user1 } from './data/users';
 import { getJabberUserId, wssGenerator } from './utils/helpers';
-import { useStrophe } from './hooks/useStrophe';
+import { useStrophe, stropheBuilder } from './hooks/useStrophe';
 import { variables } from './constants/Variables';
 
 const connection = new Strophe.Connection(wssGenerator(variables.boshServer));
@@ -19,6 +19,9 @@ function App() {
     connecting,
     disconnecting,
     disconnected,
+    domainName,
+    resource,
+    bareJid,
   } = useStrophe({
     credentials,
     connection,
@@ -27,8 +30,34 @@ function App() {
 
   useEffect(() => {
     connect();
+    return () => {
+      disconnect('unmounted');
+    };
   }, []);
 
+  const createPing = (to: string) => {
+    const ping = stropheBuilder
+      .iq({
+        to,
+        type: 'get',
+        id: 'ping1',
+      })
+      .c('ping', { xmlns: 'urn:xmpp:ping' });
+    return ping;
+  };
+
+  useEffect(() => {
+    if (domainName) {
+      console.log({ domainName, bareJid, resource });
+      const ping = createPing(domainName);
+      connection.send(ping);
+    }
+  }, [domainName]);
+
+  //   .t('How do you do');
+
+  // const domain = Strophe.getDomainFromJid(connection.jid);
+  // console.log('domain', domain);
   return (
     <div>
       {connecting && <p>Connecting...</p>}
