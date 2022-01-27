@@ -1,14 +1,14 @@
-import { strophReducerState, StrophAllActions } from './stroph.types';
+import { StropheReducerState, StropheAllActions } from './strophe.types';
 import {
   CONNECTED,
   CONNECTING,
   DISCONNECTED,
   DISCONNECTING,
-} from './strophActions';
+} from './stropheActions';
 
 const singleStateGenerator = (
-  stateKey: keyof strophReducerState
-): strophReducerState => ({
+  stateKey: keyof StropheReducerState
+): StropheReducerState => ({
   connecting: false,
   connected: false,
   disconnecting: false,
@@ -19,15 +19,15 @@ const singleStateGenerator = (
 
 /* eslint-disable default-param-last */
 export const strophReducer = (
-  state: strophReducerState = {
+  state: StropheReducerState = {
     connecting: false,
     connected: false,
     disconnecting: false,
     disconnected: false,
     reason: null,
   },
-  action: StrophAllActions
-): strophReducerState => {
+  action: StropheAllActions
+): StropheReducerState => {
   /* eslint-enable default-param-last */
   switch (action.type) {
     case CONNECTING:

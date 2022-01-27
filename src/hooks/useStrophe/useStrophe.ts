@@ -1,14 +1,14 @@
 import { useReducer } from 'react';
 import { Strophe } from 'strophe.js';
-import { strophReducerState } from './stroph.types';
-import { strophReducer } from './strophReducer';
+import { strophReducer } from './stropheReducer';
 import { executeFunction } from './utils/helpers';
 import {
   setConnectedAction,
   setConnectingAction,
   setDisconnectedAction,
   setDisconnectingAction,
-} from './strophActionGenerator';
+} from './stropheActionGenerator';
+import { StropheReducerState } from './strophe.types';
 
 type PropType = {
   credentials: {
@@ -23,7 +23,7 @@ type PropType = {
   connection: Strophe.Connection;
 };
 
-const initialState: strophReducerState = {
+const initialState: StropheReducerState = {
   connecting: false,
   connected: false,
   disconnecting: false,
@@ -52,17 +52,19 @@ const useStrophe = ({
         for (const stropheStatus in Strophe.Status) {
           if (Number(Strophe.Status[stropheStatus]) === status) {
             // eslint-disable-next-line
-            console.info(`Strophe status: ${stropheStatus}`);
+            console.info(
+              `Strophe status: ${stropheStatus} reason ${stropheReason}`
+            );
           }
         }
       }
       switch (status) {
         case Strophe.Status.CONNECTING:
-          dispatch(setConnectingAction());
+          dispatch(setConnectingAction(stropheReason));
           executeFunction(onConnecting);
           break;
         case Strophe.Status.CONNECTED:
-          dispatch(setConnectedAction());
+          dispatch(setConnectedAction(stropheReason));
           executeFunction(onConnect);
           break;
         case Strophe.Status.DISCONNECTING:
