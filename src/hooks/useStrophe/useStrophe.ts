@@ -12,6 +12,17 @@ import {
 } from './stropheActionGenerator';
 import { StropheReducerState } from './strophe.types';
 
+type HandlerType = {
+  handlerFunc: (_payload: Element) => boolean;
+  matcher: {
+    namespace?: string;
+    name: 'message' | 'iq' | 'presence';
+    type?: string;
+    id?: string;
+    from?: string;
+  };
+};
+
 type PropType = {
   credentials: {
     jabid: string;
@@ -27,6 +38,7 @@ type PropType = {
   onPresence?: (_presence: Element) => boolean;
   onIq?: (_id: Element) => boolean;
   connection: Strophe.Connection;
+  handlers?: HandlerType[];
 };
 
 const initialState: StropheReducerState = {
@@ -50,6 +62,7 @@ const useStrophe = ({
   onMessage,
   onPresence,
   onIq,
+  handlers = [],
 }: PropType) => {
   const [
     {
@@ -67,6 +80,7 @@ const useStrophe = ({
   const onMessageHandler = useRef(null);
   const onPresenceHandler = useRef(null);
   const onIqHandler = useRef(null);
+  const stropheHandlers = useRef<any[] | null>(null);
 
   const connectHandlers = () => {
     onMessageHandler.current = connection.addHandler(
@@ -104,12 +118,26 @@ const useStrophe = ({
       undefined,
       'iq'
     );
+
+    stropheHandlers.current = handlers.map(
+      ({ handlerFunc, matcher: { namespace, name, type, id, from } }) =>
+        connection.addHandler(handlerFunc, namespace, name, type, id, from)
+    );
   };
 
   const disconnectHandlers = () => {
     connection.deleteHandler(onMessageHandler);
     connection.deleteHandler(onPresenceHandler);
     connection.deleteHandler(onIqHandler);
+    if (stropheHandlers.current && Array.isArray(stropheHandlers.current)) {
+      stropheHandlers.current.forEach(handler => {
+        connection.deleteHandler(handler);
+      });
+    }
+    onMessageHandler.current = null;
+    onPresenceHandler.current = null;
+    onIqHandler.current = null;
+    stropheHandlers.current = null;
   };
 
   useEffect(() => {
